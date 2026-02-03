@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Varauskalenteri - JR-Yhtiöt</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#0b0b0f",
+            card: "#13131a"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-screen bg-ink text-gray-100 flex flex-col">
+  <div class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute -top-24 left-[-10%] h-[520px] w-[820px] rounded-full bg-violet-600/25 blur-3xl"></div>
+    <div class="absolute -top-24 right-[-10%] h-[420px] w-[720px] rounded-full bg-pink-500/20 blur-3xl"></div>
+  </div>
+
+  <header class="sticky top-0 z-20 border-b border-white/10 bg-ink/80 backdrop-blur">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+      <div>
+        <h1 class="text-lg font-bold leading-tight">Varauskalenteri</h1>
+        <p class="text-xs text-gray-400">JR-Yhtiöt taksivaraukset</p>
+      </div>
+      <a href="index.html" class="text-sm font-semibold text-violet-300 hover:text-violet-200">← Uutiset</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-6 w-full flex-1">
+    <!-- Filter -->
+    <div class="mb-6 flex flex-wrap gap-3">
+      <select id="driverFilter" class="rounded-lg border border-white/10 bg-card/80 px-3 py-2 text-sm text-gray-100 outline-none focus:border-violet-400/50">
+        <option value="">Kaikki kuljettajat</option>
+        <option value="janne">Janne</option>
+        <option value="aake">Aake</option>
+      </select>
+      <select id="statusFilter" class="rounded-lg border border-white/10 bg-card/80 px-3 py-2 text-sm text-gray-100 outline-none focus:border-violet-400/50">
+        <option value="">Kaikki statukset</option>
+        <option value="pending">Odottava</option>
+        <option value="confirmed">Vahvistettu</option>
+        <option value="completed">Valmis</option>
+      </select>
+    </div>
+
+    <!-- Bookings List -->
+    <div id="bookingsList" class="space-y-3">
+      <div class="text-center text-gray-400 py-8">Ladataan varauksia...</div>
+    </div>
+  </main>
+
+  <footer class="border-t border-white/10 bg-ink/60 mt-auto">
+    <div class="mx-auto max-w-5xl px-4 py-4 text-center text-xs text-gray-500">
+      JR-Yhtiöt © 2026
+    </div>
+  </footer>
+
+  <script>
+    let allBookings = [];
+
+    async function loadBookings() {
+      try {
+        const response = await fetch("/api/bookings");
+        allBookings = await response.json();
+        renderBookings();
+      } catch (err) {
+        console.error("Error loading bookings:", err);
+        document.getElementById("bookingsList").innerHTML = `
+          <div class="rounded-2xl border border-white/10 bg-card/60 p-4 text-sm text-gray-300">
+            ⚠️ Ei yhteyttä palvelimeen. Käynnistä: <code class="text-xs">npm run dev</code>
+          </div>`;
+      }
+    }
+
+    function renderBookings() {
+      const driverFilter = document.getElementById("driverFilter").value;
+      const statusFilter = document.getElementById("statusFilter").value;
+
+      let filtered = allBookings;
+      if (driverFilter) filtered = filtered.filter(b => b.driver === driverFilter);
+      if (statusFilter) filtered = filtered.filter(b => b.status === statusFilter);
+
+      filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      if (filtered.length === 0) {
+        document.getElementById("bookingsList").innerHTML = `
+          <div class="text-center text-gray-400 py-8">Ei varauksia.</div>`;
+        return;
+      }
+
+      document.getElementById("bookingsList").innerHTML = filtered.map(booking => `
+        <div class="rounded-2xl border border-white/10 bg-card/70 p-4">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-violet-300">${booking.driver.toUpperCase()}</span>
+                <span class="text-xs px-2 py-1 rounded-full ${
+                  booking.status === 'pending' ? 'bg-yellow-500/20 text-yellow-300' :
+                  booking.status === 'confirmed' ? 'bg-green-500/20 text-green-300' :
+                  'bg-gray-500/20 text-gray-300'
+                }">
+                  ${booking.status === 'pending' ? '⏳ Odottava' : booking.status === 'confirmed' ? '✓ Vahvistettu' : '✓ Valmis'}
+                </span>
+              </div>
+              <p class="mt-2 text-sm font-semibold text-gray-100">📅 ${new Date(booking.date).toLocaleDateString('fi-FI')}</p>
+              <p class="text-xs text-gray-400">⏰ ${booking.timeSlot}</p>
+              <p class="mt-2 text-sm text-gray-300">📍 ${booking.location}</p>
+              <p class="text-xs text-gray-400">📞 ${booking.phone}</p>
+              ${booking.notes ? `<p class="mt-2 text-xs text-gray-400 italic">💬 ${booking.notes}</p>` : ''}
+            </div>
+            <button 
+              onclick="deleteBooking(${booking.id})"
+              class="text-xs text-red-400 hover:text-red-300 font-semibold">
+              Poista
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function deleteBooking(id) {
+      if (!confirm("Poista varaus?")) return;
+      try {
+        const response = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
+        if (response.ok) {
+          loadBookings();
+        }
+      } catch (err) {
+        alert("Virhe poistettaessa: " + err.message);
+      }
+    }
+
+    document.getElementById("driverFilter").addEventListener("change", renderBookings);
+    document.getElementById("statusFilter").addEventListener("change", renderBookings);
+
+    // Load on start
+    loadBookings();
+
+    // Refresh every 5 seconds
+    setInterval(loadBookings, 5000);
+  </script>
+</body>
+</html>

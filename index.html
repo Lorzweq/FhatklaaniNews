@@ -23,7 +23,7 @@
   </script>
 </head>
 
-<body class="min-h-screen bg-ink text-gray-100">
+<body class="min-h-screen bg-ink text-gray-100 flex flex-col">
   <!-- taustagradientit -->
   <div class="pointer-events-none fixed inset-0 -z-10">
     <div class="absolute -top-24 left-[-10%] h-[520px] w-[820px] rounded-full bg-violet-600/25 blur-3xl"></div>
@@ -43,6 +43,13 @@
       </div>
 
       <div class="flex w-full gap-2 sm:w-auto">
+        <a
+          href="calendar.html"
+          class="shrink-0 rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 px-3 py-2 text-xs font-bold text-white hover:opacity-95 transition-opacity"
+          title="Varauskalenteri"
+        >
+          📅
+        </a>
         <input
           id="search"
           type="search"
@@ -57,27 +64,86 @@
         >
           Päivitä
         </button>
+        <a
+          href="booking.html"
+          class="shrink-0 rounded-xl bg-gradient-to-br from-violet-600 to-pink-500 px-4 py-2 text-sm font-bold text-white shadow-sm hover:opacity-95 active:opacity-90"
+        >
+          Varaa Taksi
+        </a>
       </div>
     </div>
   </header>
 
-  <main class="mx-auto max-w-5xl px-4 py-5">
-    <section class="rounded-2xl border border-white/10 bg-card/60 p-4 text-sm text-gray-300">
-      <span class="font-semibold text-gray-200">Huom:</span>
-      Kaikki jutut ovat totta <span class="italic">pelkkä totuus</span>.
-    </section>
+  <main class="mx-auto max-w-7xl px-4 py-5 w-full flex-1">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Left Sidebar Ad -->
+      <aside class="hidden md:block">
+        <div class="sticky top-20 rounded-2xl border border-white/10 bg-gradient-to-br from-card/80 to-card/40 p-5 shadow-lg hover:shadow-xl transition-shadow">
+          <a href="booking.html" class="block">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-600 mb-2">
+                JR
+              </div>
+              <p class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Yhtiöt</p>
+              <p class="text-[10px] text-gray-500 mt-1">Premium Matkailupalvelut</p>
+            </div>
+            <div class="mt-4 rounded-xl bg-gradient-to-br from-pink-500/30 to-violet-600/30 p-4 border border-white/10 text-center">
+              <p class="text-xs text-gray-300 font-semibold">Tarvitset hyvän kyydin?</p>
+              <p class="text-[11px] text-gray-400 mt-2">JR-Yhtiö pitää huolta sinusta!</p>
+              <p class="text-[10px] text-violet-300 font-bold mt-3">Janne — CEO & Driver</p>
+              <p class="text-[9px] text-gray-500 mt-1">Pääjohtaja ja kuljettaja</p>
+              <div class="mt-3 pt-3 border-t border-white/10">
+                <p class="text-[10px] text-pink-300 font-semibold">🚀 Tulossa: Aake</p>
+              </div>
+            </div>
+            <button class="w-full mt-3 rounded-lg bg-gradient-to-r from-pink-500 to-violet-600 py-2 text-xs font-bold text-white hover:opacity-90 transition-opacity">
+              Varaa Nyt
+            </button>
+          </a>
+        </div>
+      </aside>
 
-    <div id="meta" class="mt-4 text-xs text-gray-400"></div>
+      <!-- Main Content -->
+      <div class="md:col-span-2">
+        <div id="meta" class="mt-4 text-xs text-gray-400"></div>
+        <section id="list" class="mt-3 grid grid-cols-1 gap-3"></section>
+      </div>
 
-    <section id="list" class="mt-3 grid grid-cols-1 gap-3"></section>
+      <!-- Right Sidebar Ad -->
+      <aside class="hidden md:block">
+        <div class="sticky top-20 rounded-2xl border border-white/10 bg-gradient-to-br from-card/80 to-card/40 p-5 shadow-lg hover:shadow-xl transition-shadow">
+          <a href="booking.html" class="block">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-600 mb-2">
+                JR
+              </div>
+              <p class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Yhtiöt</p>
+              <p class="text-[10px] text-gray-500 mt-1">Premium Matkailupalvelut</p>
+            </div>
+            <div class="mt-4 rounded-xl bg-gradient-to-br from-pink-500/30 to-violet-600/30 p-4 border border-white/10 text-center">
+              <p class="text-xs text-gray-300 font-semibold">Tarvitset hyvän kyydin?</p>
+              <p class="text-[11px] text-gray-400 mt-2">JR-Yhtiö pitää huolta sinusta!</p>
+              <p class="text-[10px] text-violet-300 font-bold mt-3">Janne — CEO & Driver</p>
+              <p class="text-[9px] text-gray-500 mt-1">Pääjohtaja ja kuljettaja</p>
+              <div class="mt-3 pt-3 border-t border-white/10">
+                <p class="text-[10px] text-pink-300 font-semibold">🚀 Tulossa: Aake</p>
+              </div>
+            </div>
+            <button class="w-full mt-3 rounded-lg bg-gradient-to-r from-pink-500 to-violet-600 py-2 text-xs font-bold text-white hover:opacity-90 transition-opacity">
+              Varaa Nyt
+            </button>
+          </a>
+        </div>
+      </aside>
+    </div>
   </main>
 
-  <footer class="border-t border-white/10 bg-ink/60">
+  <footer class="border-t border-white/10 bg-ink/60 mt-auto">
     <div class="mx-auto max-w-5xl px-4 py-4 text-center text-xs text-gray-500">
       Lähteet ovat luotettavia.
     </div>
   </footer>
 
-  <script src="./app.js"></script>
+  <script src="./docs/app.js"></script>
 </body>
 </html>

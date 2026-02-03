@@ -4,6 +4,7 @@ const searchEl = document.getElementById("search");
 const refreshBtn = document.getElementById("refresh");
 
 let allItems = [];
+const BASE_PATH = location.pathname.includes("/docs/") ? "./" : "./docs/";
 
 function escapeHtml(s) {
   return String(s)
@@ -48,9 +49,11 @@ function render(items) {
   listEl.innerHTML = items.map((it) => {
     const name = escapeHtml(it.name ?? "");
     const headline = escapeHtml(it.headline ?? "");
-    const content = escapeHtml(it.content ?? "");
+    const fullContent = escapeHtml(it.content ?? "");
+    const truncatedContent = fullContent.length > 150 ? fullContent.slice(0, 150) + "..." : fullContent;
     const date = escapeHtml(formatDate(it.date));
     const tags = Array.isArray(it.tags) ? it.tags : [];
+    const detailUrl = `detail.html?i=${encodeURIComponent(it._index ?? "")}`;
 
     const tagsHtml = tags.slice(0, 8).map(t => `
       <span class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-gray-300">
@@ -72,11 +75,17 @@ function render(items) {
         </h2>
 
         <p class="mt-2 text-sm leading-relaxed text-gray-300">
-          ${content}
+          ${truncatedContent}
         </p>
 
         <div class="mt-3 flex flex-wrap gap-2">
           ${tagsHtml}
+        </div>
+
+        <div class="mt-3">
+          <a href="${detailUrl}" class="text-xs font-semibold text-violet-300 hover:text-violet-200">
+            Avaa yksityiskohtainen sivu →
+          </a>
         </div>
       </article>
     `;
@@ -84,14 +93,14 @@ function render(items) {
 }
 
 async function loadNews({ bustCache = false } = {}) {
-  const url = bustCache ? `./news.json?ts=${Date.now()}` : "./news.json";
+  const url = bustCache ? `${BASE_PATH}news.json?ts=${Date.now()}` : `${BASE_PATH}news.json`;
 
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`news.json fetch failed: ${res.status}`);
   const data = await res.json();
 
   // Jos news.json on tyhjä tai ei array, normalisoidaan
-  allItems = Array.isArray(data) ? data : [];
+  allItems = (Array.isArray(data) ? data : []).map((it, idx) => ({ ...it, _index: idx }));
   const q = searchEl.value;
   render(allItems.filter(it => matches(it, q)));
 }
