@@ -31,14 +31,35 @@ function ensureDir(path) {
 function safePrompt(name) {
   return `
 Tee LEIKILLINEN ja SELVÄSTI FIKTIIVINEN juoru-uutinen henkilöstä nimeltä ${name}.
-Tyyli: suomi, "seiska-henkinen", absurdin humoristinen ja hyväntahtoinen.
+Tyyli: suomi, seiska-henkinen parodia, överi ja humoristinen.
 
-SÄÄNNÖT:
-- Ei väitteitä oikeista rikoksista, sairauksista, päihteistä, seksistä tai muista arkaluonteisista asioista.
-- Ei ulkonäön pilkkaamista, ei vihapuhetta.
-- Tee selvästi vitsiksi: liioittelua, "lähteiden mukaan" -tyyliä.
+YLEINEN OHJE:
+- Kyseessä on VITSI ja PARODIA. Kaikki tapahtumat ovat keksittyjä.
+- Tekstin pitää olla selvästi liioiteltua ja epäluotettavaa.
 
-Palauta VAIN validi JSON (ei muuta):
+SALLITTUA SISÄLTÖÄ:
+- Vahva humalatila (esim. sammuminen, horjuva käytös, muistikatkokset, jatkot, karaoke, tanssilattian kaaos).
+- Rohkeat ja hassut seksivihjailut ja -tilanteet:
+  esim. nolot flirtit, yllättävät suuteluhetket, vaatteiden katoaminen,
+  epäselvät makuuhuonetarinat, “mitä yön aikana oikeasti tapahtui”.
+- Kevyet rikkeet huumorilla (esim. metelöinti, väärä paikka väärään aikaan).
+
+RAJOITUKSET (TÄRKEÄÄ):
+- Ei alaikäisiä missään muodossa.
+- Ei väkivaltaa, ei huumeita, ei seksuaalirikoksia.
+- Ei graafista tai pornografista kuvausta seksistä
+  (pidä vihjailevana, koomisen epäselvänä ja liioittelevana).
+- Ei todentuntuisia, vakavia rikossyytöksiä.
+- Ei vihapuhetta eikä ulkonäön pilkkaamista.
+
+TYYLI:
+- Käytä juorukieltä:
+  "lähteiden mukaan", "silminnäkijät väittävät",
+  "tilannetta ei ole pystytty vahvistamaan".
+- Jätä epäselväksi, mitä oikeasti tapahtui.
+- Loppuun voi lisätä ironisen toimituksen huomautuksen.
+
+Palauta VAIN validi JSON (ei mitään muuta tekstiä):
 {
   "headline": "string",
   "content": "string",
